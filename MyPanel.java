@@ -48,7 +48,7 @@ ArrayList<Coord> activePeices;
           case 1:
             g2D.setPaint(Color.red);
             g2D.fillRect(200 + (gridSize * i), 100 + (x * gridSize), gridSize, gridSize);
-            g2D.setPaint(Color.black);
+            g2D.setPaint(Color.darkGray);
             g2D.drawRect(200 + (gridSize * i), 100 + (x * gridSize), gridSize, gridSize);
             break;
           default:
