@@ -13,6 +13,8 @@ int height;
 int gridSize;
 int updateDelay;
 int activeType;
+int rotationPress;
+boolean performedRot;
 Coord rotCoord;
 ArrayList<Coord> activePeices;
 Color[][] tetrColor;
@@ -78,8 +80,16 @@ Color[][] tetrColor;
   }
   @Override
 	public void actionPerformed(ActionEvent e) {
+    //Key presses
+    if (rotationPress != 0 && !performedRot) {
+      performedRot = true;
+      updateBuffer();
+      rotatePeice();//temporarily uni-directional
+    }
+    //Updates
     if (updateDelay <= 0) {
       updateBuffer();
+      descend();
       copyBufferToBoard();
       updateDelay = 25;
     } else {
@@ -104,6 +114,9 @@ Color[][] tetrColor;
     for (int i = 0; i < activePeices.size(); i++) {
       bufferedBoard[activePeices.get(i).x][activePeices.get(i).y] = 0; 
     }
+  }
+
+  public void descend() {
     boolean descended = descendActive();
     for (int i = 0; i < activePeices.size(); i++) {
       try {
@@ -129,6 +142,7 @@ Color[][] tetrColor;
     switch(type) {
       case 1:
         //T-Block
+        rotCoord = new Coord(5, 4);
         activePeices.add(new Coord(4,5,3));
         activePeices.add(new Coord(5,5,3));
         activePeices.add(new Coord(6,5,3));
@@ -156,6 +170,7 @@ Color[][] tetrColor;
         tempColor = activePeices.get(i).color;
         activePeices.set(i, new Coord(tempX, tempY + 1, tempColor));
       }
+      rotCoord.changeY(1);
     }
     return success;
   }
@@ -175,5 +190,37 @@ Color[][] tetrColor;
       //System.out.println("It was out of bounds");
       return true;
     }
-  } 
+  }
+  public void rotatePeice() {
+    if (rotatationCheck()) {
+      for (int i = 0; i < activePeices.size(); ++i) {
+        //Getting the coordinate relative to it's rotation point
+        Coord tempRelative = new Coord(activePeices.get(i).x - rotCoord.x, activePeices.get(i).y - rotCoord.y);
+        //Rotating those rotation points (Reflecting around origin, is that rotation?), and then adding back to the original coord
+        tempRelative = new Coord(tempRelative.y + rotCoord.x, tempRelative.x + rotCoord.y);
+        System.out.println("Orignal: " + activePeices.get(i).toString() + " final: " + tempRelative.toString());
+        activePeices.set(i, new Coord(tempRelative.x, tempRelative.y, activePeices.get(i).color));
+      }
+    }
+  }
+  public boolean rotatationCheck() {
+    boolean safeToRotate = true;
+    //System.out.println("rot point = " + rotCoord.toString());
+    for (int i = 0; i < activePeices.size(); ++i) {
+      //Getting the coordinate relative to it's rotation point
+      Coord tempRelative = new Coord(activePeices.get(i).x - rotCoord.x, activePeices.get(i).y - rotCoord.y);
+      //System.out.println("Orignal: " + activePeices.get(i).toString() + " relative:" + tempRelative.toString());
+      //Rotating those rotation points (Reflecting around origin, is that rotation?)
+      tempRelative = new Coord(tempRelative.y, tempRelative.x);
+      //Turning the relative value into a true coordinate value
+      tempRelative = new Coord(tempRelative.x + rotCoord.x, tempRelative.y + rotCoord.y);
+      //Now we check if that space is open. (finally)
+      //System.out.println("Orignal: " + activePeices.get(i).toString() + " final: " + tempRelative.toString());
+      if (tileOccupied(tempRelative.x, tempRelative.y)) {
+        safeToRotate = false;
+        System.out.println("couldn't rotate " + tempRelative.toString());
+      }
+    }
+    return safeToRotate;
+  }
 }

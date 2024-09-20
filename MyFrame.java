@@ -28,8 +28,16 @@ public class MyFrame extends JFrame implements KeyListener{
  @Override
 	public void keyPressed(KeyEvent e) {
     //System.out.println(e.getKeyCode());
+    if (e.getKeyCode() == 69) {
+      //E, clockwise turn.
+      panel.rotationPress = 1;
+    }
   }
   @Override
 	public void keyReleased(KeyEvent e) {
+    if (e.getKeyCode() == 69 || e.getKeyCode() == 81) {
+      panel.rotationPress = 0;
+      panel.performedRot = false;
+    }
   }
 }
