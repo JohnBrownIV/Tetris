@@ -16,7 +16,7 @@ int activeType;
 int rotationPress;
 boolean performedRot;
 Coord rotCoord;
-ArrayList<Coord> activePeices;
+ArrayList<Coord> activePieces;
 Color[][] tetrColor;
  
   MyPanel(){
@@ -36,7 +36,7 @@ Color[][] tetrColor;
     boardStatus = new int[10][25];
     bufferedBoard = new int[10][25];
     gridSize = (height - 100) / 20;
-    activePeices = new ArrayList<Coord>();
+    activePieces = new ArrayList<Coord>();
     //Test States (remember 6 is when things are on the board)
     boardStatus[2][6] = 1;
     boardStatus[2][7] = 1;
@@ -78,13 +78,22 @@ Color[][] tetrColor;
       }
     }
   }
+  //NEW FRAME
+  /////
+  ////
+  /////
+  ////
+  ///
+  ///
   @Override
 	public void actionPerformed(ActionEvent e) {
     //Key presses
     if (rotationPress != 0 && !performedRot) {
       performedRot = true;
       updateBuffer();
-      rotatePeice();//temporarily uni-directional
+      rotatePiece();//temporarily uni-directional
+      copyBufferToBoard();
+      updateDelay += 5;
     }
     //Updates
     if (updateDelay <= 0) {
@@ -111,22 +120,18 @@ Color[][] tetrColor;
         bufferedBoard[x][y] = boardStatus[x][y];
       }
     }
-    for (int i = 0; i < activePeices.size(); i++) {
-      bufferedBoard[activePeices.get(i).x][activePeices.get(i).y] = 0; 
+    for (int i = 0; i < activePieces.size(); i++) {
+      bufferedBoard[activePieces.get(i).x][activePieces.get(i).y] = 0; 
     }
   }
 
   public void descend() {
     boolean descended = descendActive();
-    for (int i = 0; i < activePeices.size(); i++) {
-      try {
-      bufferedBoard[activePeices.get(i).x][activePeices.get(i).y] = activePeices.get(i).color; 
-      } catch (IndexOutOfBoundsException e) {
-        System.out.println("ERROR, attempted at " + activePeices.get(i).y);
-      }
+    for (int i = 0; i < activePieces.size(); i++) {
+      bufferedBoard[activePieces.get(i).x][activePieces.get(i).y] = activePieces.get(i).color; 
     }
     if (!descended) {
-      activePeices.clear();
+      activePieces.clear();
       generatePeice(1);
     }
   }
@@ -143,10 +148,10 @@ Color[][] tetrColor;
       case 1:
         //T-Block
         rotCoord = new Coord(5, 4);
-        activePeices.add(new Coord(4,5,3));
-        activePeices.add(new Coord(5,5,3));
-        activePeices.add(new Coord(6,5,3));
-        activePeices.add(new Coord(5,4,3));
+        activePieces.add(new Coord(4,5,3));
+        activePieces.add(new Coord(5,5,3));
+        activePieces.add(new Coord(6,5,3));
+        activePieces.add(new Coord(5,4,3));
         break;
     }
   }
@@ -156,19 +161,19 @@ Color[][] tetrColor;
     int tempY;
     int tempColor;
     //Checking if we can update
-    for (int i = 0; i < activePeices.size(); i++) {
-      if (tileOccupied(activePeices.get(i).x, activePeices.get(i).y + 1)) {
+    for (int i = 0; i < activePieces.size(); i++) {
+      if (tileOccupied(activePieces.get(i).x, activePieces.get(i).y + 1)) {
         success = false;
         //System.out.println("Couldn't descend");
       }
     }
     if (success) {
       //updating
-      for (int i = 0; i < activePeices.size(); i++) {
-        tempX = activePeices.get(i).x;
-        tempY = activePeices.get(i).y;
-        tempColor = activePeices.get(i).color;
-        activePeices.set(i, new Coord(tempX, tempY + 1, tempColor));
+      for (int i = 0; i < activePieces.size(); i++) {
+        tempX = activePieces.get(i).x;
+        tempY = activePieces.get(i).y;
+        tempColor = activePieces.get(i).color;
+        activePieces.set(i, new Coord(tempX, tempY + 1, tempColor));
       }
       rotCoord.changeY(1);
     }
@@ -191,24 +196,25 @@ Color[][] tetrColor;
       return true;
     }
   }
-  public void rotatePeice() {
+  public void rotatePiece() {
     if (rotatationCheck()) {
-      for (int i = 0; i < activePeices.size(); ++i) {
+      for (int i = 0; i < activePieces.size(); ++i) {
         //Getting the coordinate relative to it's rotation point
-        Coord tempRelative = new Coord(activePeices.get(i).x - rotCoord.x, activePeices.get(i).y - rotCoord.y);
+        Coord tempRelative = new Coord(activePieces.get(i).x - rotCoord.x, activePieces.get(i).y - rotCoord.y);
         //Rotating those rotation points (Reflecting around origin, is that rotation?), and then adding back to the original coord
         tempRelative = new Coord(tempRelative.y + rotCoord.x, tempRelative.x + rotCoord.y);
-        System.out.println("Orignal: " + activePeices.get(i).toString() + " final: " + tempRelative.toString());
-        activePeices.set(i, new Coord(tempRelative.x, tempRelative.y, activePeices.get(i).color));
+        System.out.println("Orignal: " + activePieces.get(i).toString() + " final: " + tempRelative.toString());
+        activePieces.set(i, new Coord(tempRelative.x, tempRelative.y, activePieces.get(i).color));
+        bufferedBoard[activePieces.get(i).x][activePieces.get(i).y] = activePieces.get(i).color; 
       }
     }
   }
   public boolean rotatationCheck() {
     boolean safeToRotate = true;
     //System.out.println("rot point = " + rotCoord.toString());
-    for (int i = 0; i < activePeices.size(); ++i) {
+    for (int i = 0; i < activePieces.size(); ++i) {
       //Getting the coordinate relative to it's rotation point
-      Coord tempRelative = new Coord(activePeices.get(i).x - rotCoord.x, activePeices.get(i).y - rotCoord.y);
+      Coord tempRelative = new Coord(activePieces.get(i).x - rotCoord.x, activePieces.get(i).y - rotCoord.y);
       //System.out.println("Orignal: " + activePeices.get(i).toString() + " relative:" + tempRelative.toString());
       //Rotating those rotation points (Reflecting around origin, is that rotation?)
       tempRelative = new Coord(tempRelative.y, tempRelative.x);
