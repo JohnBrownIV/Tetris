@@ -28,7 +28,7 @@ Color[][] tetrColor;
   public void defineVariables() {
     width = 800;
     height = 900;
-    updateDelay = 5;
+    updateDelay = 25;
     boardStatus = new int[10][25];
     bufferedBoard = new int[10][25];
     gridSize = (height - 100) / 20;
@@ -79,7 +79,7 @@ Color[][] tetrColor;
     if (updateDelay <= 0) {
       updateBuffer();
       copyBufferToBoard();
-      updateDelay = 5;
+      updateDelay = 25;
     } else {
       updateDelay--;
     }
@@ -102,9 +102,17 @@ Color[][] tetrColor;
     for (int i = 0; i < activePeices.size(); i++) {
       bufferedBoard[activePeices.get(i).x][activePeices.get(i).y] = 0; 
     }
-    descendActive();
+    boolean descended = descendActive();
     for (int i = 0; i < activePeices.size(); i++) {
+      try {
       bufferedBoard[activePeices.get(i).x][activePeices.get(i).y] = activePeices.get(i).color; 
+      } catch (IndexOutOfBoundsException e) {
+        System.out.println("ERROR, attempted at " + activePeices.get(i).y);
+      }
+    }
+    if (!descended) {
+      activePeices.clear();
+      generatePeice(1);
     }
   }
 
@@ -119,13 +127,9 @@ Color[][] tetrColor;
     switch(type) {
       case 1:
         //T-Block
-        bufferedBoard[4][5] = 3;
         activePeices.add(new Coord(4,5,3));
-        bufferedBoard[5][5] = 3;
         activePeices.add(new Coord(5,5,3));
-        bufferedBoard[6][5] = 3;
         activePeices.add(new Coord(6,5,3));
-        bufferedBoard[5][4] = 3;
         activePeices.add(new Coord(5,4,3));
         break;
     }
@@ -137,9 +141,9 @@ Color[][] tetrColor;
     int tempColor;
     //Checking if we can update
     for (int i = 0; i < activePeices.size(); i++) {
-      if (tileOccupied(activePeices.get(i).x, activePeices.get(i).y - 1)) {
+      if (tileOccupied(activePeices.get(i).x, activePeices.get(i).y + 1)) {
         success = false;
-        System.out.println("Couldn't descend");
+        //System.out.println("Couldn't descend");
       }
     }
     if (success) {
@@ -154,16 +158,19 @@ Color[][] tetrColor;
     return success;
   }
   public boolean tileOccupied(int inX, int inY) {
-    System.out.println("Checked occupation | " + inX + ", " + inY);
+    //System.out.println("Checked occupation | " + inX + ", " + inY);
     //THIS CHECKS THE BUFFER
-    if (inY < 25 && inY >= 0 && inX >= 0 && inY < 10) {
+    if (inY < 25 && inX >= 0 && inX < 10) {
       if (bufferedBoard[inX][inY] != 0) {
+        //System.out.println("It was occupied");
         return true;
-        System.out.println("It was occupied");
       } else {
+        //System.out.println("It was open");
         return false;
       }
+
     } else {
+      //System.out.println("It was out of bounds");
       return true;
     }
   } 
