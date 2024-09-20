@@ -229,4 +229,11 @@ Color[][] tetrColor;
     }
     return safeToRotate;
   }
+  public ArrayList<Coord> simulateRot(int direction) {
+    ArrayList<Coord> temp  = new ArrayList<Coord>();
+    for (int i = 0; i < activePieces.size(); ++i) {
+      temp.add(new Coord(activePieces.get(i).x,activePieces.get(i).y,activePieces.get(i).color));
+    }
+    return temp;
+  }
 }
