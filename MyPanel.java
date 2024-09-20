@@ -12,6 +12,8 @@ int width;
 int height;
 int gridSize;
 int updateDelay;
+int activeType;
+Coord rotCoord;
 ArrayList<Coord> activePeices;
 Color[][] tetrColor;
  
