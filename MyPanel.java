@@ -203,7 +203,7 @@ Color[][] tetrColor;
         Coord tempRelative = new Coord(activePieces.get(i).x - rotCoord.x, activePieces.get(i).y - rotCoord.y);
         //Rotating those rotation points (Reflecting around origin, is that rotation?), and then adding back to the original coord
         tempRelative = new Coord(tempRelative.y + rotCoord.x, tempRelative.x + rotCoord.y);
-        System.out.println("Orignal: " + activePieces.get(i).toString() + " final: " + tempRelative.toString());
+        //System.out.println("Original: " + activePieces.get(i).toString() + " final: " + tempRelative.toString());//Debug rotator (check final product)
         activePieces.set(i, new Coord(tempRelative.x, tempRelative.y, activePieces.get(i).color));
         bufferedBoard[activePieces.get(i).x][activePieces.get(i).y] = activePieces.get(i).color; 
       }
@@ -231,9 +231,22 @@ Color[][] tetrColor;
   }
   public ArrayList<Coord> simulateRot(int direction) {
     ArrayList<Coord> temp  = new ArrayList<Coord>();
+    //Clone it over as relative
     for (int i = 0; i < activePieces.size(); ++i) {
-      temp.add(new Coord(activePieces.get(i).x,activePieces.get(i).y,activePieces.get(i).color));
+      temp.add(new Coord(activePieces.get(i).x - rotCoord.x, activePieces.get(i).y - rotCoord.y));
+      //Perform the rotations
+      switch (direction) {
+        case 4://Right
+          
+          break;
+        case 1://Left
+          break;
+        case 2://Up
+          break;
+        case 0://Down
+          break;
+      }
+      return temp;
     }
-    return temp;
   }
 }
