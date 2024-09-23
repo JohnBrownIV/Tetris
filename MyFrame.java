@@ -30,6 +30,8 @@ public class MyFrame extends JFrame implements KeyListener{
     //System.out.println(e.getKeyCode());
     if (e.getKeyCode() == 69) {
       //E, clockwise turn.
+      panel.rotationPress = -1;
+    } else if (e.getKeyCode() == 81) {
       panel.rotationPress = 1;
     }
   }
