@@ -28,6 +28,7 @@ public class MyFrame extends JFrame implements KeyListener{
  @Override
 	public void keyPressed(KeyEvent e) {
     //System.out.println(e.getKeyCode());
+    //83 = 's' (for descending faster)
     if (e.getKeyCode() == 69) {
       //E, clockwise turn.
       panel.rotationPress = -1;
