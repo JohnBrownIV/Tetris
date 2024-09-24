@@ -14,11 +14,14 @@ int gridSize;
 int updateDelay;
 int activeType;
 int rotationPress;
+int shiftPress;
+int shiftCoolDown;
 int currentRotation;
 boolean performedRot;
 Coord rotCoord;
 ArrayList<Coord> activePieces;
 Color[][] tetrColor;
+boolean fastDrop;
  
   MyPanel(){
 
@@ -38,10 +41,13 @@ Color[][] tetrColor;
     bufferedBoard = new int[10][25];
     gridSize = (height - 100) / 20;
     activePieces = new ArrayList<Coord>();
+    shiftPress = 0;
+    shiftCoolDown = 0;
+    fastDrop = false;
     //Test States (remember 6 is when things are on the board)
-    boardStatus[2][6] = 1;
-    boardStatus[2][7] = 1;
-    boardStatus[9][19] = 2;
+    //boardStatus[2][6] = 1;
+    //boardStatus[2][7] = 1;
+    //boardStatus[9][19] = 2;
     //Colors
     tetrColor = new Color[5][2];
     //Reds
@@ -89,7 +95,20 @@ Color[][] tetrColor;
   @Override
 	public void actionPerformed(ActionEvent e) {
     //Key presses
+    //shifting
+    if (shiftPress != 0) {
+      if (shiftCoolDown <= 0) {
+        updateDelay += 5;
+        shiftActive(shiftPress);
+        shiftCoolDown = 5;
+        //shift
+      } else {
+        shiftCoolDown--;
+      }
+    }
+    //rotation
     if (rotationPress != 0 && !performedRot) {
+      updateDelay += 5;
       performedRot = true;
       //System.out.println("Rotation triggered");
       rotatePiece(currentRotation);
@@ -101,18 +120,17 @@ Color[][] tetrColor;
       }
       //System.out.println("Current rotation: " + currentRotation);
       rotatePiece(currentRotation);//temporarily uni-directional
-      updateDelay += 5;
     }
     //Updates
     if (updateDelay <= 0) {
-      updateBuffer();
       descend();
-      copyBufferToBoard();
       updateDelay = 25;
     } else {
       updateDelay--;
+      if (fastDrop) {
+        updateDelay -= 3;
+      }
     }
-    repaint();
   }
 
   public void copyBufferToBoard() {
@@ -120,6 +138,12 @@ Color[][] tetrColor;
       for (int y = 0; y < 25; ++y) {
         boardStatus[x][y] = bufferedBoard[x][y];
       }
+    }
+    repaint();
+  }
+  public void copyActiveToBuffer() {
+    for (Coord temp : activePieces) {
+      bufferedBoard[temp.x][temp.y] = temp.color;
     }
   }
   public void updateBuffer() {
@@ -134,6 +158,7 @@ Color[][] tetrColor;
   }
 
   public void descend() {
+    updateBuffer();
     boolean descended = descendActive();
     for (int i = 0; i < activePieces.size(); i++) {
       bufferedBoard[activePieces.get(i).x][activePieces.get(i).y] = activePieces.get(i).color; 
@@ -142,6 +167,8 @@ Color[][] tetrColor;
       activePieces.clear();
       generatePeice(1);
     }
+    copyActiveToBuffer();
+    copyBufferToBoard();
   }
 
   public void reset() {
@@ -214,9 +241,9 @@ Color[][] tetrColor;
       activePieces.clear();
       for (Coord tempCoord : temp) {
         activePieces.add(tempCoord);
-        bufferedBoard[tempCoord.x][tempCoord.y] = tempCoord.color;
       }
     }
+    copyActiveToBuffer();
     copyBufferToBoard();
   }
   public boolean rotatationCheck(int direction) {
@@ -259,5 +286,26 @@ Color[][] tetrColor;
       temp.get(i).y += rotCoord.y;
     }
     return temp;
+  }
+  public void shiftActive(int direction) {
+    updateBuffer();
+    boolean clear = true;
+    for (Coord temp : activePieces) {
+      if (tileOccupied(temp.x + direction, temp.y)) {
+        clear = false;
+        break;
+      }
+    }
+    if (clear) {
+      rotCoord.x += direction;
+      for (int i = 0; i < activePieces.size(); i++) {
+        activePieces.get(i).x = activePieces.get(i).x + direction;
+      }
+    }
+    copyActiveToBuffer();
+    copyBufferToBoard();
+  }
+  public void checkClears() {
+    
   }
 }

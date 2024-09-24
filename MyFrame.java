@@ -29,11 +29,21 @@ public class MyFrame extends JFrame implements KeyListener{
 	public void keyPressed(KeyEvent e) {
     //System.out.println(e.getKeyCode());
     //83 = 's' (for descending faster)
+    //68 = D
+    //65 = A
     if (e.getKeyCode() == 69) {
       //E, clockwise turn.
       panel.rotationPress = -1;
     } else if (e.getKeyCode() == 81) {
       panel.rotationPress = 1;
+    }
+    if (e.getKeyCode() == 68) {
+      panel.shiftPress = 1;
+    } else if (e.getKeyCode() == 65) {
+      panel.shiftPress = -1;
+    }
+    if (e.getKeyCode() == 83) {
+      panel.fastDrop = true;
     }
   }
   @Override
@@ -41,6 +51,13 @@ public class MyFrame extends JFrame implements KeyListener{
     if (e.getKeyCode() == 69 || e.getKeyCode() == 81) {
       panel.rotationPress = 0;
       panel.performedRot = false;
+    }
+    if (e.getKeyCode() == 68 || e.getKeyCode() == 65) {
+      panel.shiftPress = 0;
+      panel.shiftCoolDown = 0;
+    }
+    if (e.getKeyCode() == 83) {
+      panel.fastDrop = false;
     }
   }
 }
