@@ -17,6 +17,7 @@ int rotationPress;
 int shiftPress;
 int shiftCoolDown;
 int currentRotation;
+int score;
 boolean performedRot;
 Coord rotCoord;
 ArrayList<Coord> activePieces;
@@ -43,6 +44,7 @@ boolean fastDrop;
     activePieces = new ArrayList<Coord>();
     shiftPress = 0;
     shiftCoolDown = 0;
+    score = 0;
     fastDrop = false;
     //Test States (remember 6 is when things are on the board)
     //boardStatus[2][6] = 1;
@@ -71,6 +73,7 @@ boolean fastDrop;
     g2D.fillRect(0, 0, width, 100);
     g2D.fillRect(0, 0, 200, height);
     g2D.fillRect(width - 200, 0, 200, height);
+    //tiles
     for (int x = 5; x < 25; x++) {
       for (int i = 0; i < 10; i++) {
         if (boardStatus[i][x] == 0) {
@@ -84,6 +87,9 @@ boolean fastDrop;
         }
       }
     }
+    //Score
+    g2D.setColor(Color.black);
+    g2D.fillRect(10,100,175,60);
   }
   //NEW FRAME
   /////
@@ -165,6 +171,7 @@ boolean fastDrop;
     }
     if (!descended) {
       activePieces.clear();
+      checkClears();
       generatePeice(1);
     }
     copyActiveToBuffer();
@@ -188,6 +195,8 @@ boolean fastDrop;
         activePieces.add(new Coord(5,5,3));
         activePieces.add(new Coord(6,5,3));
         activePieces.add(new Coord(5,4,3));
+        break;
+      case 2:
         break;
     }
   }
@@ -306,6 +315,38 @@ boolean fastDrop;
     copyBufferToBoard();
   }
   public void checkClears() {
-    boolean cleared
+    int scoreAdd = 0;
+    int multiplier = 1;
+    int i = 24;
+    while (i > 5) {
+      if (checkLineClear(i)) {
+        ++scoreAdd;
+        ++multiplier;
+        i = 24;
+      } else {
+        i--;
+      }
+    }
+    score += scoreAdd * multiplier;
+  }
+  public boolean checkLineClear(int lineCheck) {
+    updateBuffer();
+    boolean cleared = true;
+    for (int i = 0; i < 10; ++i) {
+      if (!tileOccupied(i, lineCheck)) {
+        cleared = false;
+        break;
+      }
+    }
+    //System.out.println(lineCheck + " " + cleared);
+    if (cleared) {
+      for (int y = lineCheck; y > 5; --y) {
+        for (int x = 0; x < 10; ++x) {
+          bufferedBoard[x][y] = bufferedBoard[x][y - 1];
+        }
+      }
+    }
+    copyBufferToBoard();
+    return cleared;
   }
 }
