@@ -306,6 +306,6 @@ boolean fastDrop;
     copyBufferToBoard();
   }
   public void checkClears() {
-    
+    boolean cleared
   }
 }
