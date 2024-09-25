@@ -23,6 +23,7 @@ Coord rotCoord;
 ArrayList<Coord> activePieces;
 Color[][] tetrColor;
 boolean fastDrop;
+String scoreDisplay;
  
   MyPanel(){
 
@@ -45,6 +46,7 @@ boolean fastDrop;
     shiftPress = 0;
     shiftCoolDown = 0;
     score = 0;
+    scoreDisplay = "000000000";
     fastDrop = false;
     //Test States (remember 6 is when things are on the board)
     //boardStatus[2][6] = 1;
@@ -90,14 +92,16 @@ boolean fastDrop;
     //Score
     g2D.setColor(Color.black);
     g2D.fillRect(10,100,175,60);
+    g2D.setColor(Color.white);
+    g2D.setFont(new Font("Times New Roman", 1, 35));
+    g2D.drawString(scoreDisplay, 16, 145);
   }
   //NEW FRAME
-  /////
-  ////
-  /////
-  ////
-  ///
-  ///
+  ///////\\\\\\\
+  //////||\\\\\\
+  ///// -- \\\\\
+  ////______\\\\
+  //Triangle guy^
   @Override
 	public void actionPerformed(ActionEvent e) {
     //Key presses
@@ -338,6 +342,7 @@ boolean fastDrop;
       }
     }
     score += scoreAdd * multiplier;
+    scoreDisplay = String.format("%09d", score);
   }
   public boolean checkLineClear(int lineCheck) {
     updateBuffer();
