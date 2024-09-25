@@ -117,7 +117,6 @@ boolean fastDrop;
       updateDelay += 5;
       performedRot = true;
       //System.out.println("Rotation triggered");
-      rotatePiece(currentRotation);
       currentRotation += rotationPress;
       if (currentRotation > 3) {
         currentRotation = 0;
@@ -125,7 +124,7 @@ boolean fastDrop;
         currentRotation = 3;
       }
       //System.out.println("Current rotation: " + currentRotation);
-      rotatePiece(currentRotation);//temporarily uni-directional
+      rotatePiece(currentRotation,  currentRotation - rotationPress);//temporarily uni-directional
     }
     //Updates
     if (updateDelay <= 0) {
@@ -241,15 +240,26 @@ boolean fastDrop;
       return true;
     }
   }
-  public void rotatePiece(int direction) {
+  public void rotatePiece(int direction, int rotToFirst) {
     //System.out.println("Rotation called");
     updateBuffer();
+    ArrayList<Coord> temp  = simulateRot(rotToFirst);
+    activePieces.clear();
+    for (Coord tempCoord : temp) {
+      activePieces.add(tempCoord);
+    }
     if (rotatationCheck(direction)) {
       //System.out.println("Rotation passed");
-      ArrayList<Coord> temp  = simulateRot(direction);
+      temp  = simulateRot(direction);
       activePieces.clear();
       for (Coord tempCoord : temp) {
         activePieces.add(tempCoord);
+      }
+    } else {
+      temp  = simulateRot(rotToFirst);
+      activePieces.clear();
+      for (Coord tempCoord : temp) {
+      activePieces.add(tempCoord);
       }
     }
     copyActiveToBuffer();
