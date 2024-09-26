@@ -47,7 +47,7 @@ String scoreDisplay;
     activePieces = new ArrayList<Coord>();
     pieces = new int[3];
     pieces[0] = 1;
-    pieces[1] = 2;
+    pieces[1] = 3;
     shiftPress = 0;
     shiftCoolDown = 0;
     score = 0;
@@ -168,17 +168,15 @@ String scoreDisplay;
     }
     //rotation
     if (rotationPress != 0 && !performedRot) {
-      updateDelay += 5;
-      performedRot = true;
-      //System.out.println("Rotation triggered");
       currentRotation += rotationPress;
-      if (currentRotation > 3) {
-        currentRotation = 0;
-      } else if (currentRotation < 0) {
+      if (currentRotation < 0) {
         currentRotation = 3;
+      } else if (currentRotation > 3) {
+        currentRotation = 0;
       }
-      //System.out.println("Current rotation: " + currentRotation);
-      rotatePiece(currentRotation,  currentRotation - rotationPress);//temporarily uni-directional
+      System.out.println("Current rotation: " + currentRotation);
+      rotatePiece(currentRotation);
+      performedRot = true;
     }
     //Updates
     if (updateDelay <= 0) {
@@ -244,11 +242,11 @@ String scoreDisplay;
     switch(type) {
       case 1:
         //Red Lightning
-        rotCoord = new Coord(5, 4);
+        rotCoord = new Coord(5, 4, 0);
         break;
       case 2:
         //Blue L
-        rotCoord = new Coord(5, 4);
+        rotCoord = new Coord(5, 4,1);
         activePieces.add(new Coord(5,4,2));
         activePieces.add(new Coord(4,4,2));
         activePieces.add(new Coord(6,4,2));
@@ -256,7 +254,7 @@ String scoreDisplay;
         break;
       case 3:
         //T-Block
-        rotCoord = new Coord(5, 5);
+        rotCoord = new Coord(5, 5,2);
         activePieces.add(new Coord(4,5,3));
         activePieces.add(new Coord(5,5,3));
         activePieces.add(new Coord(6,5,3));
@@ -307,38 +305,24 @@ String scoreDisplay;
       return true;
     }
   }
-  public void rotatePiece(int direction, int rotToFirst) {
+  public void rotatePiece(int direction) {
     //System.out.println("Rotation called");
     updateBuffer();
-    ArrayList<Coord> temp  = simulateRot(rotToFirst);
-    activePieces.clear();
-    for (Coord tempCoord : temp) {
-      activePieces.add(tempCoord);
-    }
-    if (rotatationCheck(direction)) {
-      //System.out.println("Rotation passed");
-      temp  = simulateRot(direction);
+    ArrayList<Coord> temp = simulateRot(direction);
+    if (rotatationCheck(direction, temp)) {
       activePieces.clear();
-      for (Coord tempCoord : temp) {
-        activePieces.add(tempCoord);
-      }
-    } else {
-      temp  = simulateRot(rotToFirst);
-      activePieces.clear();
-      for (Coord tempCoord : temp) {
-      activePieces.add(tempCoord);
+      for (int i = 0; i < temp.size(); ++i) {
+        activePieces.add(temp.get(i));
       }
     }
     copyActiveToBuffer();
     copyBufferToBoard();
   }
-  public boolean rotatationCheck(int direction) {
+  public boolean rotatationCheck(int direction, ArrayList<Coord> temp) {
     boolean safeToRotate = true;
-    ArrayList<Coord> temp  = simulateRot(direction);
-    for (Coord tempCoord : temp) {
-      if (tileOccupied(tempCoord.x, tempCoord.y)) {
+    for (int i = 0; i < temp.size(); ++i) {
+      if (tileOccupied(temp.get(i).x, temp.get(i).y)) {
         safeToRotate = false;
-        //System.out.println("Rotation failed at " + tempCoord.toString());
         break;
       }
     }
@@ -346,30 +330,12 @@ String scoreDisplay;
   }
   public ArrayList<Coord> simulateRot(int direction) {
     ArrayList<Coord> temp  = new ArrayList<Coord>();
-    //Clone it over as relative
-    for (int i = 0; i < activePieces.size(); ++i) {
-      temp.add(new Coord(activePieces.get(i).x - rotCoord.x, activePieces.get(i).y - rotCoord.y, activePieces.get(i).color));
-      int tempX = temp.get(i).x;
-      int tempY = temp.get(i).y;
-      //Perform the rotations
-      switch (direction) {
-        case 3://Right
-          temp.get(i).x = tempY;
-          temp.get(i).y = tempX;
-          break;
-        case 1://Left
-          temp.get(i).x = -1 * tempY;
-          temp.get(i).y = -1 * tempX;
-          break;
-        case 2:
-          temp.get(i).y = -1 * tempY;
-          break;
-        case 0://Down (don't bother for rn)
-          break;
+    for (int x = 0; x < 5; ++x) {
+      for (int y = 0; y < 5; ++y) {
+        if (rotationVariants[rotCoord.color][direction][x][y] != 0) {
+          temp.add(new Coord(x + rotCoord.x, y + rotCoord.y, rotCoord.color));
+        }
       }
-      //Revert to orignal version
-      temp.get(i).x += rotCoord.x;
-      temp.get(i).y += rotCoord.y;
     }
     return temp;
   }
