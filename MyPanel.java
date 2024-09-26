@@ -8,6 +8,8 @@ public class MyPanel extends JPanel implements ActionListener {
 Timer timer;
 int[][] boardStatus;
 int[][] bufferedBoard;
+int[] pieces; //0 = next, 1 = active, 2 = held.
+int[][][][] rotationVariants;
 int width;
 int height;
 int gridSize;
@@ -32,7 +34,7 @@ String scoreDisplay;
     timer = new Timer(5, this);
     timer.start();
     //Test spawn;
-    generatePeice(1);
+    generatePeice(pieces[1]);
    
   }
   public void defineVariables() {
@@ -43,6 +45,9 @@ String scoreDisplay;
     bufferedBoard = new int[10][25];
     gridSize = (height - 100) / 20;
     activePieces = new ArrayList<Coord>();
+    pieces = new int[3];
+    pieces[0] = 1;
+    pieces[1] = 2;
     shiftPress = 0;
     shiftCoolDown = 0;
     score = 0;
@@ -63,6 +68,51 @@ String scoreDisplay;
     //Purple
     tetrColor[3][0] = new Color(255,0,255);
     tetrColor[3][1] = new Color(100,0,100);
+    //Rotation variants (ugh)
+    rotationVariants = new int[7][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
+    //Piece 3 - T block
+      //Default rotation
+      rotationVariants[2][0][2][2] = 3;//Center
+      rotationVariants[2][0][2][3] = 3;
+      rotationVariants[2][0][1][2] = 3;
+      rotationVariants[2][0][3][2] = 3;
+      //Rotated right
+      rotationVariants[2][1][2][2] = 3;//Center
+      rotationVariants[2][1][3][2] = 3;
+      rotationVariants[2][1][2][1] = 3;
+      rotationVariants[2][1][2][3] = 3;
+      //Rotated left
+      rotationVariants[2][3][2][2] = 3;//Center
+      rotationVariants[2][3][1][2] = 3;
+      rotationVariants[2][3][2][1] = 3;
+      rotationVariants[2][3][2][3] = 3;
+      //Flipped
+      rotationVariants[2][2][2][2] = 3;//Center
+      rotationVariants[2][2][2][3] = 3;
+      rotationVariants[2][2][1][2] = 3;
+      rotationVariants[2][2][3][2] = 3;
+    //Piece 1 - Red Lightning
+      //Default rotation
+      rotationVariants[0][0][2][2] = 1;
+      rotationVariants[0][0][2][3] = 1;
+      rotationVariants[0][0][3][2] = 1;
+      rotationVariants[0][0][3][1] = 1;
+      //Rotated right
+      rotationVariants[0][1][2][2] = 1;
+      rotationVariants[0][1][3][2] = 1;
+      rotationVariants[0][1][1][1] = 1;
+      rotationVariants[0][1][2][1] = 1;
+      //Vertical flip
+      rotationVariants[0][2][2][2] = 1;
+      rotationVariants[0][2][2][1] = 1;
+      rotationVariants[0][2][1][2] = 1;
+      rotationVariants[0][2][1][3] = 1;
+      //Rotated Left
+      rotationVariants[0][3][2][2] = 1;
+      rotationVariants[0][3][1][2] = 1;
+      rotationVariants[0][3][2][3] = 1;
+      rotationVariants[0][3][3][3] = 1;
+
   }
  
   public void paint(Graphics g) {
@@ -133,7 +183,7 @@ String scoreDisplay;
     //Updates
     if (updateDelay <= 0) {
       descend();
-      updateDelay = 25;
+      updateDelay = 20;
     } else {
       updateDelay--;
       if (fastDrop) {
@@ -175,7 +225,8 @@ String scoreDisplay;
     if (!descended) {
       activePieces.clear();
       checkClears();
-      generatePeice(1);
+      generatePeice(pieces[0]);
+      pieces[0] = randPiece();
     }
     copyActiveToBuffer();
     copyBufferToBoard();
@@ -192,16 +243,28 @@ String scoreDisplay;
     currentRotation = 0;
     switch(type) {
       case 1:
-        //T-Block
+        //Red Lightning
         rotCoord = new Coord(5, 4);
+        break;
+      case 2:
+        //Blue L
+        rotCoord = new Coord(5, 4);
+        activePieces.add(new Coord(5,4,2));
+        activePieces.add(new Coord(4,4,2));
+        activePieces.add(new Coord(6,4,2));
+        activePieces.add(new Coord(6,5,2));
+        break;
+      case 3:
+        //T-Block
+        rotCoord = new Coord(5, 5);
         activePieces.add(new Coord(4,5,3));
         activePieces.add(new Coord(5,5,3));
         activePieces.add(new Coord(6,5,3));
         activePieces.add(new Coord(5,4,3));
-        break;
-      case 2:
-        break;
     }
+  }
+  public int randPiece() {
+    return (int)(Math.random() * 2) + 1;
   }
   public boolean descendActive() {
     boolean success = true;
