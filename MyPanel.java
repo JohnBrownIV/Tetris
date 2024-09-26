@@ -72,46 +72,67 @@ String scoreDisplay;
     rotationVariants = new int[7][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
     //Piece 3 - T block
       //Default rotation
-      rotationVariants[2][0][2][2] = 3;//Center
-      rotationVariants[2][0][2][3] = 3;
-      rotationVariants[2][0][1][2] = 3;
-      rotationVariants[2][0][3][2] = 3;
+      rotationVariants[3][0][2][2] = 3;//Center
+      rotationVariants[3][0][2][1] = 3;
+      rotationVariants[3][0][1][2] = 3;
+      rotationVariants[3][0][3][2] = 3;
       //Rotated right
-      rotationVariants[2][1][2][2] = 3;//Center
-      rotationVariants[2][1][3][2] = 3;
-      rotationVariants[2][1][2][1] = 3;
-      rotationVariants[2][1][2][3] = 3;
+      rotationVariants[3][1][2][2] = 3;//Center
+      rotationVariants[3][1][3][2] = 3;
+      rotationVariants[3][1][2][1] = 3;
+      rotationVariants[3][1][2][3] = 3;
       //Rotated left
-      rotationVariants[2][3][2][2] = 3;//Center
-      rotationVariants[2][3][1][2] = 3;
-      rotationVariants[2][3][2][1] = 3;
-      rotationVariants[2][3][2][3] = 3;
+      rotationVariants[3][3][2][2] = 3;//Center
+      rotationVariants[3][3][1][2] = 3;
+      rotationVariants[3][3][2][1] = 3;
+      rotationVariants[3][3][2][3] = 3;
       //Flipped
-      rotationVariants[2][2][2][2] = 3;//Center
-      rotationVariants[2][2][2][3] = 3;
-      rotationVariants[2][2][1][2] = 3;
-      rotationVariants[2][2][3][2] = 3;
+      rotationVariants[3][2][2][2] = 3;//Center
+      rotationVariants[3][2][2][3] = 3;
+      rotationVariants[3][2][1][2] = 3;
+      rotationVariants[3][2][3][2] = 3;
     //Piece 1 - Red Lightning
       //Default rotation
-      rotationVariants[0][0][2][2] = 1;
-      rotationVariants[0][0][2][3] = 1;
-      rotationVariants[0][0][3][2] = 1;
-      rotationVariants[0][0][3][1] = 1;
+      rotationVariants[1][0][2][2] = 1;
+      rotationVariants[1][0][2][3] = 1;
+      rotationVariants[1][0][3][2] = 1;
+      rotationVariants[1][0][3][1] = 1;
       //Rotated right
-      rotationVariants[0][1][2][2] = 1;
-      rotationVariants[0][1][3][2] = 1;
-      rotationVariants[0][1][1][1] = 1;
-      rotationVariants[0][1][2][1] = 1;
+      rotationVariants[1][1][2][2] = 1;
+      rotationVariants[1][1][3][2] = 1;
+      rotationVariants[1][1][1][1] = 1;
+      rotationVariants[1][1][2][1] = 1;
       //Vertical flip
-      rotationVariants[0][2][2][2] = 1;
-      rotationVariants[0][2][2][1] = 1;
-      rotationVariants[0][2][1][2] = 1;
-      rotationVariants[0][2][1][3] = 1;
+      rotationVariants[1][2][2][2] = 1;
+      rotationVariants[1][2][2][1] = 1;
+      rotationVariants[1][2][1][2] = 1;
+      rotationVariants[1][2][1][3] = 1;
       //Rotated Left
-      rotationVariants[0][3][2][2] = 1;
-      rotationVariants[0][3][1][2] = 1;
-      rotationVariants[0][3][2][3] = 1;
-      rotationVariants[0][3][3][3] = 1;
+      rotationVariants[1][3][2][2] = 1;
+      rotationVariants[1][3][1][2] = 1;
+      rotationVariants[1][3][2][3] = 1;
+      rotationVariants[1][3][3][3] = 1;
+    //Piece 2 - Blue L
+      //Default rotation
+      rotationVariants[2][0][2][2] = 2;//Center
+      rotationVariants[2][0][1][2] = 2;
+      rotationVariants[2][0][3][2] = 2;
+      rotationVariants[2][0][3][1] = 2;
+      //Rotated Right
+      rotationVariants[2][1][2][2] = 2;//Center
+      rotationVariants[2][1][2][1] = 2;
+      rotationVariants[2][1][2][3] = 2;
+      rotationVariants[2][1][1][1] = 2;
+      //Vertical Flip
+      rotationVariants[2][2][2][2] = 2;//Center
+      rotationVariants[2][2][1][2] = 2;
+      rotationVariants[2][2][3][2] = 2;
+      rotationVariants[2][2][3][3] = 2;
+      //Rotated Left
+      rotationVariants[2][3][2][2] = 2;//Center
+      rotationVariants[2][3][2][1] = 2;
+      rotationVariants[2][3][2][3] = 2;
+      rotationVariants[2][3][1][3] = 2;
 
   }
  
@@ -242,23 +263,23 @@ String scoreDisplay;
     switch(type) {
       case 1:
         //Red Lightning
-        rotCoord = new Coord(5, 4, 0);
+        rotCoord = new Coord(5, 5, 1);
         break;
       case 2:
         //Blue L
-        rotCoord = new Coord(5, 4,1);
-        activePieces.add(new Coord(5,4,2));
-        activePieces.add(new Coord(4,4,2));
-        activePieces.add(new Coord(6,4,2));
-        activePieces.add(new Coord(6,5,2));
+        rotCoord = new Coord(5, 4,2);
         break;
       case 3:
         //T-Block
-        rotCoord = new Coord(5, 5,2);
-        activePieces.add(new Coord(4,5,3));
-        activePieces.add(new Coord(5,5,3));
-        activePieces.add(new Coord(6,5,3));
-        activePieces.add(new Coord(5,4,3));
+        rotCoord = new Coord(5, 5,3);
+    }
+    for (int x = 0; x < 5; ++x) {
+      for (int y = 0; y < 5; ++y) {
+        if (rotationVariants[rotCoord.color][0][x][y] != 0) {
+          System.out.println("Accessed " + rotCoord.color);
+          activePieces.add(new Coord(x + (rotCoord.x - 2), y + (rotCoord.y - 2), rotCoord.color));
+        }
+      }
     }
   }
   public int randPiece() {
@@ -333,7 +354,7 @@ String scoreDisplay;
     for (int x = 0; x < 5; ++x) {
       for (int y = 0; y < 5; ++y) {
         if (rotationVariants[rotCoord.color][direction][x][y] != 0) {
-          temp.add(new Coord(x + rotCoord.x, y + rotCoord.y, rotCoord.color));
+          temp.add(new Coord(x + (rotCoord.x - 2), y + (rotCoord.y - 2), rotCoord.color));
         }
       }
     }
