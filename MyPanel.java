@@ -47,7 +47,7 @@ String scoreDisplay;
     activePieces = new ArrayList<Coord>();
     pieces = new int[3];
     pieces[0] = 1;
-    pieces[1] = 3;
+    pieces[1] = 4;
     shiftPress = 0;
     shiftCoolDown = 0;
     score = 0;
@@ -58,7 +58,7 @@ String scoreDisplay;
     //boardStatus[2][7] = 1;
     //boardStatus[9][19] = 2;
     //Colors
-    tetrColor = new Color[5][2];
+    tetrColor = new Color[8][2];
     //Reds
     tetrColor[1][0] = new Color(255,0,0);
     tetrColor[1][1] = new Color(100,0,0);
@@ -68,6 +68,12 @@ String scoreDisplay;
     //Purple
     tetrColor[3][0] = new Color(255,0,255);
     tetrColor[3][1] = new Color(100,0,100);
+    //Orange
+    tetrColor[4][0] = new Color(255,128,0);
+    tetrColor[4][1] = new Color(153,65,0);
+    //yellow
+    tetrColor[5][0] = new Color(255,255,0);
+    tetrColor[5][1] = new Color(100,100,0);
     //Rotation variants (ugh)
     rotationVariants = new int[7][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
     //Piece 3 - T block
@@ -117,12 +123,12 @@ String scoreDisplay;
       rotationVariants[2][0][2][2] = 2;//Center
       rotationVariants[2][0][1][2] = 2;
       rotationVariants[2][0][3][2] = 2;
-      rotationVariants[2][0][3][1] = 2;
+      rotationVariants[2][0][1][1] = 2;
       //Rotated Right
       rotationVariants[2][1][2][2] = 2;//Center
       rotationVariants[2][1][2][1] = 2;
       rotationVariants[2][1][2][3] = 2;
-      rotationVariants[2][1][1][1] = 2;
+      rotationVariants[2][1][1][3] = 2;
       //Vertical Flip
       rotationVariants[2][2][2][2] = 2;//Center
       rotationVariants[2][2][1][2] = 2;
@@ -132,8 +138,35 @@ String scoreDisplay;
       rotationVariants[2][3][2][2] = 2;//Center
       rotationVariants[2][3][2][1] = 2;
       rotationVariants[2][3][2][3] = 2;
-      rotationVariants[2][3][1][3] = 2;
-
+      rotationVariants[2][3][3][1] = 2;
+    //Piece 4 - Orange L
+      //Default rotation
+      rotationVariants[4][0][2][2] = 4;//Center
+      rotationVariants[4][0][1][2] = 4;
+      rotationVariants[4][0][3][2] = 4;
+      rotationVariants[4][0][1][1] = 4;
+      //Rotated Right
+      rotationVariants[4][1][2][2] = 4;//Center
+      rotationVariants[4][1][2][1] = 4;
+      rotationVariants[4][1][2][3] = 4;
+      rotationVariants[4][1][1][1] = 4;
+      //Vertical Flip
+      rotationVariants[4][2][2][2] = 4;//Center
+      rotationVariants[4][2][1][2] = 4;
+      rotationVariants[4][2][3][2] = 4;
+      rotationVariants[4][2][1][3] = 4;
+      //Rotated Left
+      rotationVariants[4][3][2][2] = 4;//Center
+      rotationVariants[4][3][2][1] = 4;
+      rotationVariants[4][3][2][3] = 4;
+      rotationVariants[4][3][3][3] = 4;
+    //Piece 5 - the square
+      for (int i = 0; i < 4; ++i) {
+        rotationVariants[5][i][2][2] = 5;
+        rotationVariants[5][i][2][3] = 5;
+        rotationVariants[5][i][3][2] = 5;
+        rotationVariants[5][i][3][3] = 5;
+      }
   }
  
   public void paint(Graphics g) {
@@ -269,21 +302,28 @@ String scoreDisplay;
         //Blue L
         rotCoord = new Coord(5, 4,2);
         break;
+      case 4:
+        //Orange L
+        rotCoord = new Coord(5, 4,4);
+      break;
       case 3:
         //T-Block
         rotCoord = new Coord(5, 5,3);
+        break;
+      case 5:
+        //Square
+        rotCoord = new Coord(5, 4,5);
     }
     for (int x = 0; x < 5; ++x) {
       for (int y = 0; y < 5; ++y) {
         if (rotationVariants[rotCoord.color][0][x][y] != 0) {
-          System.out.println("Accessed " + rotCoord.color);
           activePieces.add(new Coord(x + (rotCoord.x - 2), y + (rotCoord.y - 2), rotCoord.color));
         }
       }
     }
   }
   public int randPiece() {
-    return (int)(Math.random() * 2) + 1;
+    return (int)(Math.random() * 5) + 1;
   }
   public boolean descendActive() {
     boolean success = true;
