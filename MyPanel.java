@@ -105,25 +105,25 @@ String scoreDisplay;
       rotationVariants[3][2][3][2] = 3;
     //Piece 1 - Red Lightning
       //Default rotation
-      rotationVariants[1][0][2][2] = 1;
-      rotationVariants[1][0][2][3] = 1;
-      rotationVariants[1][0][3][2] = 1;
-      rotationVariants[1][0][3][1] = 1;
-      //Rotated right
       rotationVariants[1][1][2][2] = 1;
+      rotationVariants[1][1][2][3] = 1;
       rotationVariants[1][1][3][2] = 1;
-      rotationVariants[1][1][1][1] = 1;
-      rotationVariants[1][1][2][1] = 1;
-      //Vertical flip
+      rotationVariants[1][1][3][1] = 1;
+      //Rotated right
       rotationVariants[1][2][2][2] = 1;
+      rotationVariants[1][2][3][2] = 1;
+      rotationVariants[1][2][1][1] = 1;
       rotationVariants[1][2][2][1] = 1;
-      rotationVariants[1][2][1][2] = 1;
-      rotationVariants[1][2][1][3] = 1;
-      //Rotated Left
+      //Vertical flip
       rotationVariants[1][3][2][2] = 1;
+      rotationVariants[1][3][2][1] = 1;
       rotationVariants[1][3][1][2] = 1;
-      rotationVariants[1][3][2][3] = 1;
-      rotationVariants[1][3][3][3] = 1;
+      rotationVariants[1][3][1][3] = 1;
+      //Rotated Left
+      rotationVariants[1][0][2][2] = 1;
+      rotationVariants[1][0][1][2] = 1;
+      rotationVariants[1][0][2][3] = 1;
+      rotationVariants[1][0][3][3] = 1;
     //Piece 6 - green Lightning
       //Default rotation
       rotationVariants[6][0][2][2] = 6;
@@ -210,10 +210,10 @@ String scoreDisplay;
       rotationVariants[7][3][3][2] = 7;
     //Piece 5 - the square
       for (int i = 0; i < 4; ++i) {
+        rotationVariants[5][i][1][1] = 5;
+        rotationVariants[5][i][1][2] = 5;
+        rotationVariants[5][i][2][1] = 5;
         rotationVariants[5][i][2][2] = 5;
-        rotationVariants[5][i][2][3] = 5;
-        rotationVariants[5][i][3][2] = 5;
-        rotationVariants[5][i][3][3] = 5;
       }
   }
  
@@ -251,15 +251,38 @@ String scoreDisplay;
     //Black out
     g2D.setColor(Color.black);
     g2D.fillRect(10,200,140,140);
-    g2D.setColor(Color.white);
-    g2D.setFont(new Font("Times New Roman", 1, 25));
-    g2D.drawString("NEXT:", 12, 225);
     //Piece:
     for (int x = 0; x < 5; ++x) {
       for (int y = 0; y < 5; ++y) {
-        
+        if (rotationVariants[pieces[0]][0][x][y] != 0) {
+          g2D.setPaint(tetrColor[rotationVariants[pieces[0]][0][x][y]][0]);
+          g2D.fillRect(10 + (28 * x), 214 + (27 * y), 28, 28);
+          g2D.setPaint(tetrColor[rotationVariants[pieces[0]][0][x][y]][1]);
+          g2D.drawRect(10 + (28 * x), 214 + (27 * y), 28, 28);
+        }
       }
     }
+    g2D.setColor(Color.white);
+    g2D.setFont(new Font("Times New Roman", 1, 25));
+    g2D.drawString("NEXT:", 12, 225);
+    //Hold
+    //Black out
+    g2D.setColor(Color.black);
+    g2D.fillRect(width - 170,200,140,140);
+    //Piece:
+    for (int x = 0; x < 5; ++x) {
+      for (int y = 0; y < 5; ++y) {
+        if (rotationVariants[pieces[2]][0][x][y] != 0) {
+          g2D.setPaint(tetrColor[rotationVariants[pieces[2]][0][x][y]][0]);
+          g2D.fillRect((width - 170) + (28 * x), 214 + (27 * y), 28, 28);
+          g2D.setPaint(tetrColor[rotationVariants[pieces[2]][0][x][y]][1]);
+          g2D.drawRect((width - 170) + (28 * x), 214 + (27 * y), 28, 28);
+        }
+      }
+    }
+    g2D.setColor(Color.white);
+    g2D.setFont(new Font("Times New Roman", 1, 25));
+    g2D.drawString("HELD:", width - 168, 225);
   }
   //NEW FRAME
   ///////\\\\\\\
@@ -524,5 +547,20 @@ String scoreDisplay;
     }
     copyBufferToBoard();
     return cleared;
+  }
+  public void hold() {
+    updateBuffer();
+    int temp = pieces[1];
+    int temp2 = pieces[2];
+    pieces[2] = temp;
+    if (temp2 == 0) {
+      pieces[1] = pieces[0];
+      pieces[0] = randPiece();
+    } else {
+      pieces[1] = temp2;
+    }
+    activePieces.clear();
+    generatePeice(pieces[1]);
+    copyBufferToBoard();
   }
 }

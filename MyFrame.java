@@ -28,6 +28,7 @@ public class MyFrame extends JFrame implements KeyListener{
  @Override
 	public void keyPressed(KeyEvent e) {
     //System.out.println(e.getKeyCode());
+    //87 = W (for hold)
     //83 = 's' (for descending faster)
     //68 = D
     //65 = A
@@ -44,6 +45,9 @@ public class MyFrame extends JFrame implements KeyListener{
     }
     if (e.getKeyCode() == 83) {
       panel.fastDrop = true;
+    }
+    if (e.getKeyCode() == 87) {
+      panel.hold();
     }
   }
   @Override
