@@ -247,6 +247,19 @@ String scoreDisplay;
     g2D.setColor(Color.white);
     g2D.setFont(new Font("Times New Roman", 1, 35));
     g2D.drawString(scoreDisplay, 16, 145);
+    //Next Piece
+    //Black out
+    g2D.setColor(Color.black);
+    g2D.fillRect(10,200,140,140);
+    g2D.setColor(Color.white);
+    g2D.setFont(new Font("Times New Roman", 1, 25));
+    g2D.drawString("NEXT:", 12, 225);
+    //Piece:
+    for (int x = 0; x < 5; ++x) {
+      for (int y = 0; y < 5; ++y) {
+        
+      }
+    }
   }
   //NEW FRAME
   ///////\\\\\\\
