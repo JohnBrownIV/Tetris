@@ -34,7 +34,7 @@ String scoreDisplay;
     timer = new Timer(5, this);
     timer.start();
     //Test spawn;
-    generatePeice(pieces[1]);
+    generatePeice(pieces[0]);
    
   }
   public void defineVariables() {
@@ -46,8 +46,8 @@ String scoreDisplay;
     gridSize = (height - 100) / 20;
     activePieces = new ArrayList<Coord>();
     pieces = new int[3];
-    pieces[0] = 1;
-    pieces[1] = 4;
+    pieces[0] = randPiece();
+    pieces[1] = randPiece();
     shiftPress = 0;
     shiftCoolDown = 0;
     score = 0;
@@ -74,8 +74,14 @@ String scoreDisplay;
     //yellow
     tetrColor[5][0] = new Color(255,255,0);
     tetrColor[5][1] = new Color(100,100,0);
+    //Green
+    tetrColor[6][0] = new Color(0,255,0);
+    tetrColor[6][1] = new Color(0,100,0);
+    //Teal
+    tetrColor[7][0] = new Color(0,255,255);
+    tetrColor[7][1] = new Color(0,100,100);
     //Rotation variants (ugh)
-    rotationVariants = new int[7][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
+    rotationVariants = new int[8][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
     //Piece 3 - T block
       //Default rotation
       rotationVariants[3][0][2][2] = 3;//Center
@@ -118,6 +124,27 @@ String scoreDisplay;
       rotationVariants[1][3][1][2] = 1;
       rotationVariants[1][3][2][3] = 1;
       rotationVariants[1][3][3][3] = 1;
+    //Piece 6 - green Lightning
+      //Default rotation
+      rotationVariants[6][0][2][2] = 6;
+      rotationVariants[6][0][2][1] = 6;
+      rotationVariants[6][0][3][1] = 6;
+      rotationVariants[6][0][1][2] = 6;
+      //Rotated right
+      rotationVariants[6][1][1][1] = 6;
+      rotationVariants[6][1][1][2] = 6;
+      rotationVariants[6][1][2][2] = 6;
+      rotationVariants[6][1][2][3] = 6;
+      //Vertical flip
+      rotationVariants[6][2][2][2] = 6;
+      rotationVariants[6][2][3][2] = 6;
+      rotationVariants[6][2][1][3] = 6;
+      rotationVariants[6][2][2][3] = 6;
+      //Rotated Left
+      rotationVariants[6][3][2][2] = 6;
+      rotationVariants[6][3][1][1] = 6;
+      rotationVariants[6][3][1][2] = 6;
+      rotationVariants[6][3][2][3] = 6;
     //Piece 2 - Blue L
       //Default rotation
       rotationVariants[2][0][2][2] = 2;//Center
@@ -160,6 +187,27 @@ String scoreDisplay;
       rotationVariants[4][3][2][1] = 4;
       rotationVariants[4][3][2][3] = 4;
       rotationVariants[4][3][3][3] = 4;
+    //Piece 7 - The line
+      //Default rotation
+      rotationVariants[7][0][2][0] = 7;
+      rotationVariants[7][0][2][1] = 7;
+      rotationVariants[7][0][2][2] = 7;
+      rotationVariants[7][0][2][3] = 7;
+      //Right rotation
+      rotationVariants[7][1][0][1] = 7;
+      rotationVariants[7][1][1][1] = 7;
+      rotationVariants[7][1][2][1] = 7;
+      rotationVariants[7][1][3][1] = 7;
+      //180
+      rotationVariants[7][2][1][0] = 7;
+      rotationVariants[7][2][1][1] = 7;
+      rotationVariants[7][2][1][2] = 7;
+      rotationVariants[7][2][1][3] = 7;
+      //Left rotation
+      rotationVariants[7][3][0][2] = 7;
+      rotationVariants[7][3][1][2] = 7;
+      rotationVariants[7][3][2][2] = 7;
+      rotationVariants[7][3][3][2] = 7;
     //Piece 5 - the square
       for (int i = 0; i < 4; ++i) {
         rotationVariants[5][i][2][2] = 5;
@@ -228,7 +276,7 @@ String scoreDisplay;
       } else if (currentRotation > 3) {
         currentRotation = 0;
       }
-      System.out.println("Current rotation: " + currentRotation);
+      //System.out.println("Current rotation: " + currentRotation);
       rotatePiece(currentRotation);
       performedRot = true;
     }
@@ -278,6 +326,7 @@ String scoreDisplay;
       activePieces.clear();
       checkClears();
       generatePeice(pieces[0]);
+      pieces[1] = pieces[0];
       pieces[0] = randPiece();
     }
     copyActiveToBuffer();
@@ -298,6 +347,10 @@ String scoreDisplay;
         //Red Lightning
         rotCoord = new Coord(5, 5, 1);
         break;
+      case 6:
+        //Red Lightning
+        rotCoord = new Coord(5, 5, 6);
+        break;
       case 2:
         //Blue L
         rotCoord = new Coord(5, 4,2);
@@ -305,7 +358,7 @@ String scoreDisplay;
       case 4:
         //Orange L
         rotCoord = new Coord(5, 4,4);
-      break;
+        break;
       case 3:
         //T-Block
         rotCoord = new Coord(5, 5,3);
@@ -313,6 +366,11 @@ String scoreDisplay;
       case 5:
         //Square
         rotCoord = new Coord(5, 4,5);
+        break;
+      case 7:
+        //Line
+        rotCoord = new Coord(5, 4,7);
+        break;
     }
     for (int x = 0; x < 5; ++x) {
       for (int y = 0; y < 5; ++y) {
@@ -323,7 +381,7 @@ String scoreDisplay;
     }
   }
   public int randPiece() {
-    return (int)(Math.random() * 5) + 1;
+    return (int)(Math.random() * 7) + 1;
   }
   public boolean descendActive() {
     boolean success = true;
