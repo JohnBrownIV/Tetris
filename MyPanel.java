@@ -82,7 +82,7 @@ String scoreDisplay;
     tetrColor[7][1] = new Color(0,100,100);
     //Rotation variants (ugh)
     rotationVariants = new int[8][4][5][5];//[Piece][Rotation][X][Y]. 2 would be centered on coordinates
-    //Piece 3 - T block
+    {//Piece 3 - T block
       //Default rotation
       rotationVariants[3][0][2][2] = 3;//Center
       rotationVariants[3][0][2][1] = 3;
@@ -171,7 +171,7 @@ String scoreDisplay;
       rotationVariants[4][0][2][2] = 4;//Center
       rotationVariants[4][0][1][2] = 4;
       rotationVariants[4][0][3][2] = 4;
-      rotationVariants[4][0][1][1] = 4;
+      rotationVariants[4][0][3][1] = 4;
       //Rotated Right
       rotationVariants[4][1][2][2] = 4;//Center
       rotationVariants[4][1][2][1] = 4;
@@ -214,7 +214,7 @@ String scoreDisplay;
         rotationVariants[5][i][1][2] = 5;
         rotationVariants[5][i][2][1] = 5;
         rotationVariants[5][i][2][2] = 5;
-      }
+      }}
   }
  
   public void paint(Graphics g) {
